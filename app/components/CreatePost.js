@@ -17,6 +17,7 @@ function CreatePost(props) {
       });
       console.log("New post created");
       // Redirect to new post url
+      props.addFlashMessage("Congrats, you've successfully created a post");
       props.history.push(`/post/${response.data}`);
     } catch {
       console.log("Some problem occured");
