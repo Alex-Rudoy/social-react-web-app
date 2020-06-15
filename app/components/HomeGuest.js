@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Page from "./Page";
 import Axios from "axios";
 
 function HomeGuest() {
-  const [username, setUsername] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  async function handleSubmit(e) {
+  async function handleRegistration(e) {
     e.preventDefault();
     try {
-      await Axios.post("http://localhost:8080/register", {
+      await Axios.post("/register", {
         username,
         email,
         password,
       });
       console.log("user successfully created");
+      setUsername("");
+      setEmail("");
+      setPassword("");
     } catch (e) {
       console.log(e.response.data);
     }
@@ -33,12 +36,13 @@ function HomeGuest() {
           </p>
         </div>
         <div className="col-lg-5 pl-lg-5 pb-3 py-lg-5">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleRegistration}>
             <div className="form-group">
               <label htmlFor="username-register" className="text-muted mb-1">
                 <small>Username</small>
               </label>
               <input
+                value={username}
                 id="username-register"
                 name="username"
                 className="form-control"
@@ -53,6 +57,7 @@ function HomeGuest() {
                 <small>Email</small>
               </label>
               <input
+                value={email}
                 id="email-register"
                 name="email"
                 className="form-control"
@@ -67,6 +72,7 @@ function HomeGuest() {
                 <small>Password</small>
               </label>
               <input
+                value={password}
                 id="password-register"
                 name="password"
                 className="form-control"

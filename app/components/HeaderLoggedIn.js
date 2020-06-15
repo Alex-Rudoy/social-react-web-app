@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
+import { Link } from "react-router-dom";
 
 function HeaderLoggedIn(props) {
+  function handleLogout() {
+    props.setLoggedIn(false);
+    localStorage.removeItem("complexAppToken");
+    localStorage.removeItem("complexAppUsername");
+    localStorage.removeItem("complexAppAvatar");
+  }
+
   return (
     <div className="flex-row my-3 my-md-0">
       <a href="#" className="text-white mr-2 header-search-icon">
@@ -12,12 +20,12 @@ function HeaderLoggedIn(props) {
         <span className="chat-count-badge text-white"> </span>
       </span>
       <a href="#" className="mr-2">
-        <img className="small-header-avatar" src="https://gravatar.com/avatar/b9408a09298632b5151200f3449434ef?s=128" />
+        <img className="small-header-avatar" src={localStorage.getItem("complexAppAvatar")} />
       </a>
-      <a className="btn btn-sm btn-success mr-2" href="/create-post">
+      <Link className="btn btn-sm btn-success mr-2" to="/create-post">
         Create Post
-      </a>
-      <button className="btn btn-sm btn-secondary" onClick={() => props.setLoggedIn(false)}>
+      </Link>
+      <button className="btn btn-sm btn-secondary" onClick={handleLogout}>
         Sign Out
       </button>
     </div>

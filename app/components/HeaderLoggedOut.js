@@ -2,16 +2,20 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 
 function HeaderLoggedOut(props) {
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const response = await Axios.post("http://localhost:8080/login", { username, password });
+      const response = await Axios.post("/login", { username, password });
       if (response.data) {
-        console.log(response.data);
+        localStorage.setItem("complexAppToken", response.data.token);
+        localStorage.setItem("complexAppUsername", response.data.username);
+        localStorage.setItem("complexAppAvatar", response.data.avatar);
         props.setLoggedIn(true);
+        setUsername("");
+        setPassword("");
       } else {
         console.log("incorrect username / password");
       }
@@ -25,6 +29,7 @@ function HeaderLoggedOut(props) {
       <div className="row align-items-center">
         <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
           <input
+            value={username}
             name="username"
             className="form-control form-control-sm input-dark"
             type="text"
@@ -35,6 +40,7 @@ function HeaderLoggedOut(props) {
         </div>
         <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
           <input
+            value={password}
             name="password"
             className="form-control form-control-sm input-dark"
             type="password"
