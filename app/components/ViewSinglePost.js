@@ -3,6 +3,7 @@ import Page from "./Page";
 import { useParams, Link } from "react-router-dom";
 import Axios from "axios";
 import LoadingDotsIcon from "./LoadingDotsIcon";
+import ReactMarkdown from "react-markdown";
 
 function ViewSinglePost(props) {
   const [isLoading, setIsLoading] = useState(true);
@@ -59,7 +60,9 @@ function ViewSinglePost(props) {
         Posted by <Link to={`/profile/${post.author.username}`}>{post.author.username}</Link> on {dateFormatted}
       </p>
 
-      <div className="body-content">{post.body}</div>
+      <div className="body-content">
+        <ReactMarkdown source={post.body} />
+      </div>
     </Page>
   );
 }
