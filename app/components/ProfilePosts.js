@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { useParams, Link } from "react-router-dom";
+import LoadingDotsIcon from "./LoadingDotsIcon";
 
 function ProfilePosts(props) {
   const [isLoading, setIsLoading] = useState(true);
@@ -8,9 +9,11 @@ function ProfilePosts(props) {
   const { username } = useParams();
 
   useEffect(() => {
+    const cancelRequest = Axios.CancelToken.source();
+
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/profile/${username}/posts`);
+        const response = await Axios.get(`/profile/${username}/posts`, { cancelToken: cancelRequest.token });
         setPosts(response.data);
         setIsLoading(false);
         console.log(response.data);
@@ -19,9 +22,12 @@ function ProfilePosts(props) {
       }
     }
     fetchPosts();
+    return () => {
+      cancelRequest.cancel();
+    };
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <LoadingDotsIcon />;
 
   return (
     <div className="list-group">
