@@ -20,6 +20,9 @@ import CreatePost from "./components/CreatePost";
 import ViewSinglePost from "./components/ViewSinglePost";
 import FlashMessages from "./components/FlashMessages";
 import Profile from "./components/Profile";
+import EditPost from "./components/EditPost";
+import Error404 from "./components/Error404";
+import Search from "./components/Search";
 
 function Main() {
   const initialState = {
@@ -80,13 +83,21 @@ function Main() {
             <Route path="/create-post">
               <CreatePost />
             </Route>
-            <Route path="/post/:postid">
+            <Route path="/post/:postid/edit" exact>
+              <EditPost />
+            </Route>
+            <Route path="/post/:postid" exact>
               <ViewSinglePost />
             </Route>
             <Route path="/profile/:username">
               <Profile />
             </Route>
+            //! fallback route
+            <Route>
+              <Error404 />
+            </Route>
           </Switch>
+          <Search />
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>
