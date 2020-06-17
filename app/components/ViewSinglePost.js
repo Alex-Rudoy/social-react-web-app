@@ -33,7 +33,7 @@ function ViewSinglePost(props) {
     return () => {
       cancelRequest.cancel();
     };
-  }, []);
+  }, [postid]);
 
   if (!isLoading && !post) {
     return <Error404 />;

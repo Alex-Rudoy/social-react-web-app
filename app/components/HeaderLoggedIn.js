@@ -3,6 +3,7 @@ import Axios from "axios";
 import { Link } from "react-router-dom";
 import DispatchContext from "../DispatchContext";
 import StateContext from "../StateContext";
+import ReactTooltip from "react-tooltip";
 
 function HeaderLoggedIn(props) {
   const appDispatch = useContext(DispatchContext);
@@ -12,19 +13,33 @@ function HeaderLoggedIn(props) {
     appDispatch({ type: "logout" });
   }
 
+  function handleSearchIcon(e) {
+    e.preventDefault();
+    appDispatch({ type: "openSearch" });
+  }
+
   return (
     <div className="flex-row my-3 my-md-0">
-      <a href="#" className="text-white mr-2 header-search-icon">
+      <a
+        data-for="search"
+        data-tip="Search"
+        onClick={handleSearchIcon}
+        href="#"
+        className="text-white mr-3 header-search-icon"
+      >
         <i className="fas fa-search"></i>
       </a>
-      <span className="mr-2 header-chat-icon text-white">
+      <ReactTooltip place="bottom" id="search" className="custom-tooltip" />
+      <span data-for="chat" data-tip="Chat" className="mr-3 header-chat-icon text-white">
         <i className="fas fa-comment"></i>
         <span className="chat-count-badge text-white"> </span>
       </span>
-      <Link to={`/profile/${appState.user.username}`} className="mr-2">
+      <ReactTooltip place="bottom" id="chat" className="custom-tooltip" />
+      <Link data-for="profile" data-tip="Profile" to={`/profile/${appState.user.username}`} className="mr-3">
         <img className="small-header-avatar" src={appState.user.avatar} />
       </Link>
-      <Link className="btn btn-sm btn-success mr-2" to="/create-post">
+      <ReactTooltip place="bottom" id="profile" className="custom-tooltip" />
+      <Link className="btn btn-sm btn-success mr-3" to="/create-post">
         Create Post
       </Link>
       <button className="btn btn-sm btn-secondary" onClick={handleLogout}>

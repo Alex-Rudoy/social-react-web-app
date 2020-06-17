@@ -23,6 +23,7 @@ import Profile from "./components/Profile";
 import EditPost from "./components/EditPost";
 import Error404 from "./components/Error404";
 import Search from "./components/Search";
+import { CSSTransition } from "react-transition-group";
 
 function Main() {
   const initialState = {
@@ -33,6 +34,7 @@ function Main() {
       username: localStorage.getItem("complexAppUsername"),
       avatar: localStorage.getItem("complexAppAvatar"),
     },
+    isSearchOpen: false,
   };
 
   function ourReducer(draft, action) {
@@ -46,6 +48,13 @@ function Main() {
         return;
       case "flashMessage":
         draft.flashMessages.push(action.value);
+        return;
+      case "openSearch":
+        draft.isSearchOpen = true;
+        return;
+
+      case "closeSearch":
+        draft.isSearchOpen = false;
         return;
     }
   }
@@ -97,7 +106,9 @@ function Main() {
               <Error404 />
             </Route>
           </Switch>
-          <Search />
+          <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
+            <Search />
+          </CSSTransition>
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>
