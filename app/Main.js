@@ -27,6 +27,8 @@ import { CSSTransition } from "react-transition-group";
 import Chat from "./components/Chat";
 
 function Main() {
+  //! reducer setup
+
   const initialState = {
     loggedIn: Boolean(localStorage.getItem("complexAppToken")),
     flashMessages: [],
@@ -75,6 +77,8 @@ function Main() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState);
 
+  //! save user data to local storage
+
   useEffect(() => {
     if (state.loggedIn) {
       localStorage.setItem("complexAppToken", state.user.token);
@@ -86,6 +90,34 @@ function Main() {
       localStorage.removeItem("complexAppAvatar");
     }
   }, [state.loggedIn]);
+
+  //! check token expiration
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      const cancelRequest = Axios.CancelToken.source();
+
+      async function fetchResults() {
+        try {
+          const response = await Axios.post(
+            "/checkToken",
+            { token: state.user.token },
+            { cancelToken: cancelRequest.token }
+          );
+          if (!response.data) {
+            dispatch({ type: "logout" });
+            dispatch({ type: "flashMessage", value: "Your session is expired, please log in again" });
+          }
+        } catch (error) {
+          console.log("There was a problem");
+        }
+      }
+      fetchResults();
+      return () => cancelRequest.cancel();
+    }
+  }, []);
+
+  //! JSX
 
   return (
     <StateContext.Provider value={state}>
