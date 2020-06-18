@@ -4,7 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import LoadingDotsIcon from "./LoadingDotsIcon";
 import StateContext from "../StateContext";
 
-function ProfilePosts(props) {
+function ProfileFollow(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [posts, setPosts] = useState([]);
   const { username } = useParams();
@@ -15,7 +15,7 @@ function ProfilePosts(props) {
 
     async function fetchPosts() {
       try {
-        const response = await Axios.get(`/profile/${username}/posts`, { cancelToken: cancelRequest.token });
+        const response = await Axios.get(`/profile/${username}/${props.action}`, { cancelToken: cancelRequest.token });
         setPosts(response.data);
         setIsLoading(false);
         console.log(response.data);
@@ -27,23 +27,24 @@ function ProfilePosts(props) {
     return () => {
       cancelRequest.cancel();
     };
-  }, [username]);
+  }, [username, props.action]);
 
   if (isLoading) return <LoadingDotsIcon />;
 
   if (posts.length == 0) {
-    return <p>{appState.user.username == props.profile ? "You have" : "This user has"} no posts yet</p>;
+    if (props.action == "following") {
+      return <p>{appState.user.username == props.profile ? "You are" : "This user is"} not following anyone yet</p>;
+    } else {
+      return <p>{appState.user.username == props.profile ? "You have" : "This user has"} no followers yet</p>;
+    }
   }
 
   return (
     <div className="list-group">
-      {posts.map((post) => {
-        const date = new Date(post.createdDate);
-        const dateFormatted = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+      {posts.map((follower, index) => {
         return (
-          <Link key={post._id} to={`/post/${post._id}`} className="list-group-item list-group-item-action">
-            <img className="avatar-tiny" src={post.author.avatar} /> <strong>{post.title}</strong>{" "}
-            <span className="text-muted small">on {dateFormatted}</span>
+          <Link key={index} to={`/profile/${follower.username}`} className="list-group-item list-group-item-action">
+            <img className="avatar-tiny" src={follower.avatar} /> {follower.username}
           </Link>
         );
       })}
@@ -51,4 +52,4 @@ function ProfilePosts(props) {
   );
 }
 
-export default ProfilePosts;
+export default ProfileFollow;
