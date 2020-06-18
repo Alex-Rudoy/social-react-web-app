@@ -14,8 +14,6 @@ function HeaderLoggedOut(props) {
       if (response.data) {
         appDispatch({ type: "login", data: response.data });
         appDispatch({ type: "flashMessage", value: "You have successfully logged in" });
-        setUsername("");
-        setPassword("");
       } else {
         appDispatch({ type: "flashMessage", value: "Invalid username/password" });
       }

@@ -1,9 +1,9 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect, Suspense } from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
 import Axios from "axios";
-Axios.defaults.baseURL = "http://localhost:8080";
+Axios.defaults.baseURL = process.env.BACKENDURL || "";
 
 //context
 import StateContext from "./StateContext";
@@ -12,19 +12,20 @@ import DispatchContext from "./DispatchContext";
 //components
 import Header from "./components/Header";
 import HomeGuest from "./components/HomeGuest";
-import Home from "./components/Home";
+const Home = React.lazy(() => import("./components/Home"));
 import Footer from "./components/Footer";
-import About from "./components/About";
-import Terms from "./components/Terms";
-import CreatePost from "./components/CreatePost";
-import ViewSinglePost from "./components/ViewSinglePost";
+const About = React.lazy(() => import("./components/About"));
+const Terms = React.lazy(() => import("./components/Terms"));
+const CreatePost = React.lazy(() => import("./components/CreatePost"));
+const ViewSinglePost = React.lazy(() => import("./components/ViewSinglePost"));
 import FlashMessages from "./components/FlashMessages";
-import Profile from "./components/Profile";
-import EditPost from "./components/EditPost";
-import Error404 from "./components/Error404";
-import Search from "./components/Search";
+const Profile = React.lazy(() => import("./components/Profile"));
+const EditPost = React.lazy(() => import("./components/EditPost"));
+const Error404 = React.lazy(() => import("./components/Error404"));
+const Search = React.lazy(() => import("./components/Search"));
 import { CSSTransition } from "react-transition-group";
-import Chat from "./components/Chat";
+const Chat = React.lazy(() => import("./components/Chat"));
+import LoadingDotsIcon from "./components/LoadingDotsIcon";
 
 function Main() {
   //! reducer setup
@@ -125,37 +126,43 @@ function Main() {
         <BrowserRouter>
           <FlashMessages />
           <Header />
-          <Switch>
-            <Route path="/" exact>
-              {state.loggedIn ? <Home /> : <HomeGuest />}
-            </Route>
-            <Route path="/about-us">
-              <About />
-            </Route>
-            <Route path="/terms">
-              <Terms />
-            </Route>
-            <Route path="/create-post">
-              <CreatePost />
-            </Route>
-            <Route path="/post/:postid/edit" exact>
-              <EditPost />
-            </Route>
-            <Route path="/post/:postid" exact>
-              <ViewSinglePost />
-            </Route>
-            <Route path="/profile/:username">
-              <Profile />
-            </Route>
-            //! fallback route
-            <Route>
-              <Error404 />
-            </Route>
-          </Switch>
+          <Suspense fallback={<LoadingDotsIcon />}>
+            <Switch>
+              <Route path="/" exact>
+                {state.loggedIn ? <Home /> : <HomeGuest />}
+              </Route>
+              <Route path="/about-us">
+                <About />
+              </Route>
+              <Route path="/terms">
+                <Terms />
+              </Route>
+              <Route path="/create-post">
+                <CreatePost />
+              </Route>
+              <Route path="/post/:postid/edit" exact>
+                <EditPost />
+              </Route>
+              <Route path="/post/:postid" exact>
+                <ViewSinglePost />
+              </Route>
+              <Route path="/profile/:username">
+                <Profile />
+              </Route>
+              //! fallback route
+              <Route>
+                <Error404 />
+              </Route>
+            </Switch>
+          </Suspense>
           <CSSTransition timeout={330} in={state.isSearchOpen} classNames="search-overlay" unmountOnExit>
-            <Search />
+            <div className="search-overlay">
+              <Suspense fallback="">
+                <Search />
+              </Suspense>
+            </div>
           </CSSTransition>
-          <Chat />
+          <Suspense fallback="">{state.loggedIn ? <Chat /> : ""}</Suspense>
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>

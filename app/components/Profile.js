@@ -1,11 +1,12 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, Suspense } from "react";
 import Page from "./Page";
 import { useParams, NavLink, Switch, Route } from "react-router-dom";
 import Axios from "axios";
 import StateContext from "../StateContext";
 import ProfilePosts from "./ProfilePosts";
 import { useImmer } from "use-immer";
-import ProfileFollow from "./ProfileFollow";
+import LoadingDotsIcon from "./LoadingDotsIcon";
+const ProfileFollow = React.lazy(() => import("./ProfileFollow"));
 
 function Profile(props) {
   const { username } = useParams();
@@ -165,17 +166,19 @@ function Profile(props) {
           Following: {state.profileData.counts.followingCount}
         </NavLink>
       </div>
-      <Switch>
-        <Route path={`/profile/:username`} exact>
-          <ProfilePosts />
-        </Route>
-        <Route path={`/profile/:username/followers`}>
-          <ProfileFollow action="followers" profile={state.profileData.profileUsername} />
-        </Route>
-        <Route path={`/profile/:username/following`}>
-          <ProfileFollow action="following" profile={state.profileData.profileUsername} />
-        </Route>
-      </Switch>
+      <Suspense fallback={<LoadingDotsIcon />}>
+        <Switch>
+          <Route path={`/profile/:username`} exact>
+            <ProfilePosts />
+          </Route>
+          <Route path={`/profile/:username/followers`}>
+            <ProfileFollow action="followers" profile={state.profileData.profileUsername} />
+          </Route>
+          <Route path={`/profile/:username/following`}>
+            <ProfileFollow action="following" profile={state.profileData.profileUsername} />
+          </Route>
+        </Switch>
+      </Suspense>
     </Page>
   );
 }
