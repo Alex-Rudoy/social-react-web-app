@@ -18,9 +18,8 @@ function ProfileFollow(props) {
         const response = await Axios.get(`/profile/${username}/${props.action}`, { cancelToken: cancelRequest.token });
         setPosts(response.data);
         setIsLoading(false);
-        console.log(response.data);
       } catch (error) {
-        console.log("There was a problem");
+        console.log("There was a problem (profile followers - get followers");
       }
     }
     fetchPosts();

@@ -26,7 +26,7 @@ function ViewSinglePost(props) {
         setIsLoading(false);
         console.log(response.data);
       } catch (error) {
-        console.log("There was a problem");
+        console.log("There was a problem (post page - get post data)");
       }
     }
     fetchPost();
@@ -66,7 +66,7 @@ function ViewSinglePost(props) {
           props.history.push(`/profile/${appState.user.username}`);
         }
       } catch (error) {
-        console.log("There was a problem");
+        console.log("There was a problem (post page - delete post)");
       }
     }
   }

@@ -6,6 +6,7 @@ import StateContext from "../StateContext";
 import ProfilePosts from "./ProfilePosts";
 import { useImmer } from "use-immer";
 import LoadingDotsIcon from "./LoadingDotsIcon";
+import Error404 from "./Error404";
 const ProfileFollow = React.lazy(() => import("./ProfileFollow"));
 
 function Profile(props) {
@@ -15,6 +16,7 @@ function Profile(props) {
     followActionLoading: false,
     startFollowingRequestCount: 0,
     stopFollowingRequestCount: 0,
+    notFound: false,
     profileData: {
       profileUsername: "...",
       profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
@@ -39,11 +41,21 @@ function Profile(props) {
           { token: appState.user.token },
           { cancelToken: cancelRequest.token }
         );
-        setState((draft) => {
-          draft.profileData = response.data;
-        });
+        if (response.data) {
+          setState((draft) => {
+            draft.profileData = response.data;
+          });
+        } else {
+          setState((draft) => {
+            draft.notFound = true;
+          });
+        }
+        console.log(state.notFound);
       } catch (error) {
-        console.log("There was a problem");
+        console.log("There was a problem (profile - page loader)");
+        setState((draft) => {
+          draft.notFound = true;
+        });
       }
     }
     fetchData();
@@ -80,7 +92,7 @@ function Profile(props) {
             draft.followActionLoading = false;
           });
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (profile - follow)");
           draft.followActionLoading = false;
         }
       }
@@ -119,7 +131,7 @@ function Profile(props) {
             draft.followActionLoading = false;
           });
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (profile - unfollow)");
           draft.followActionLoading = false;
         }
       }
@@ -129,6 +141,10 @@ function Profile(props) {
       };
     }
   }, [state.stopFollowingRequestCount]);
+
+  if (state.notFound) {
+    return <Error404 />;
+  }
 
   return (
     <Page title={`${appState.user.username}'s profile`}>
@@ -169,7 +185,7 @@ function Profile(props) {
       <Suspense fallback={<LoadingDotsIcon />}>
         <Switch>
           <Route path={`/profile/:username`} exact>
-            <ProfilePosts />
+            <ProfilePosts profile={state.profileData.profileUsername} />
           </Route>
           <Route path={`/profile/:username/followers`}>
             <ProfileFollow action="followers" profile={state.profileData.profileUsername} />

@@ -158,7 +158,7 @@ function HomeGuest() {
           );
           dispatch({ type: "usernameUnique", value: response.data });
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (home guest - unique name)");
         }
       }
       fetchResults();
@@ -181,7 +181,7 @@ function HomeGuest() {
           );
           dispatch({ type: "emailUnique", value: response.data });
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (home guest - unique email)");
         }
       }
       fetchResults();
@@ -217,7 +217,7 @@ function HomeGuest() {
           appDispatch({ type: "login", data: response.data });
           appDispatch({ type: "flashMessage", value: "Welcome to the new account" });
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (home guest - registration)");
         }
       }
       fetchResults();

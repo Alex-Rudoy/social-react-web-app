@@ -53,7 +53,7 @@ function Main() {
         draft.loggedIn = false;
         return;
       case "flashMessage":
-        draft.flashMessages.push(action.value);
+        draft.flashMessages.push({ msg: action.value, style: action.style });
         return;
       case "openSearch":
         draft.isSearchOpen = true;
@@ -110,7 +110,7 @@ function Main() {
             dispatch({ type: "flashMessage", value: "Your session is expired, please log in again" });
           }
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (main-token expiration");
         }
       }
       fetchResults();

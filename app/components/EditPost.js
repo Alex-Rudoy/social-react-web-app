@@ -97,7 +97,7 @@ function EditPost(props) {
           dispatch({ type: "notFound" });
         }
       } catch (error) {
-        console.log("There was a problem");
+        console.log("There was a problem (edit post-get post data");
       }
     }
     fetchPost();
@@ -131,7 +131,7 @@ function EditPost(props) {
           dispatch({ type: "saveRequestFinished" });
           appDispatch({ type: "flashMessage", value: "Congrats, you've successfully updated a post" });
         } catch (error) {
-          console.log("There was a problem here");
+          console.log("There was a problem here (edit post-update post");
         }
       }
       updatePost();

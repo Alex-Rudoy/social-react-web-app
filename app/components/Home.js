@@ -29,7 +29,7 @@ function Home(props) {
           draft.feed = response.data;
         });
       } catch (error) {
-        console.log("There was a problem");
+        console.log("There was a problem (home - feed)");
       }
     }
     fetchData();

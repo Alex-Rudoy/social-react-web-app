@@ -6,10 +6,13 @@ function FlashMessages(props) {
 
   return (
     <div className="floating-alerts">
-      {appState.flashMessages.map((msg, index) => {
+      {appState.flashMessages.map((content, index) => {
         return (
-          <div key={index} className="alert alert-success text-center floating-alert shadow-sm">
-            {msg}
+          <div
+            key={index}
+            className={`alert ${content.style ? content.style : "alert-success"} text-center floating-alert shadow-sm`}
+          >
+            {content.msg}
           </div>
         );
       })}

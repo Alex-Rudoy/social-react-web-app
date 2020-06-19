@@ -55,7 +55,7 @@ function Search(props) {
             draft.show = "results";
           });
         } catch (error) {
-          console.log("There was a problem");
+          console.log("There was a problem (search - get search results)");
         }
       }
       fetchResults();
